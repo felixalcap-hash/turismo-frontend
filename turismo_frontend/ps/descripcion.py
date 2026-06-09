@@ -255,7 +255,7 @@ ITINERARIO_BASE = [
 
 # ── Page ──────────────────────────────────────────────────────────────────────
 
-@rx.page(route="/descripcion", on_load=SearchState.on_load)
+@rx.page(route="/descripcion")
 def descripcion() -> rx.Component:
     return rx.box(
 
