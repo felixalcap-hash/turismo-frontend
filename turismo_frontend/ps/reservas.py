@@ -64,6 +64,10 @@ def styled_input(placeholder: str, input_type: str = "text") -> rx.Component:
         _placeholder={"color": "#A0AEC0"},
     )
 
+def enviar_reserva():
+    return rx.toast.success(
+        "¡Reserva enviada con éxito! Un asesor de CaribeGo se pondrá en contacto contigo pronto para confirmar los detalles de tu viaje."
+    )
 
 def reservas() -> rx.Component:
     return rx.box(
@@ -204,6 +208,7 @@ def reservas() -> rx.Component:
                             height="54px",
                             width="100%",
                             cursor="pointer",
+                            on_click=enviar_reserva,
                             box_shadow="0 4px 20px rgba(255,183,3,0.40)",
                             _hover={
                                 "background": "linear-gradient(135deg, #FFC933, #FF9A00)",

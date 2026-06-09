@@ -1,6 +1,7 @@
 import reflex as rx
 from turismo_frontend.componentes.navbar import navbar
 from turismo_frontend.componentes.footer import footer
+from turismo_frontend.state.search_state import SearchState
 
 
 OCEAN = "#0A2342"
@@ -104,6 +105,7 @@ def oferta_card(
                     border_radius="40px",
                     border="none",
                     cursor="pointer",
+                    on_click=rx.redirect("/reservas"), 
                     _hover={"opacity": "0.85"},
                     transition="opacity .2s",
                 ),
@@ -216,6 +218,7 @@ def inicio() -> rx.Component:
                     border_radius="40px",
                     border="none",
                     cursor="pointer",
+                    on_click=rx.redirect("/descripcion"), 
                     gap="8px",
                     _hover={
                         "transform": "translateY(-3px)",
@@ -268,78 +271,87 @@ def inicio() -> rx.Component:
         ),
 
         # ── BUSCADOR ──────────────────────────────────────────────────────
-        rx.box(
-            rx.box(
-                rx.text(
-                    "¿A dónde quieres ir?",
-                    font_size="0.7rem",
-                    font_weight="500",
-                    letter_spacing="0.15em",
-                    text_transform="uppercase",
-                    color=SKY,
-                    margin_bottom="14px",
-                    font_family="'DM Sans', sans-serif",
-                ),
-                rx.flex(
-                    rx.box(
-                        rx.el.input(
-                            placeholder="Destino o actividad",
-                            type="text",
-                            style=INPUT_STYLE,
-                        ),
-                        flex="2",
-                        min_width="150px",
-                    ),
-                    rx.box(
-                        rx.el.input(
-                            type="date",
-                            style=INPUT_STYLE,
-                        ),
-                        flex="1",
-                        min_width="140px",
-                    ),
-                    rx.box(
-                        rx.el.input(
-                            placeholder="Personas",
-                            type="number",
-                            min="1",
-                            style=INPUT_STYLE,
-                        ),
-                        flex="0.8",
-                        min_width="110px",
-                    ),
-                    rx.el.button(
-                        "Buscar →",
-                        style={
-                            "background": OCEAN,
-                            "color": WHITE,
-                            "font_family": "'DM Sans', sans-serif",
-                            "font_size": "0.92rem",
-                            "font_weight": "600",
-                            "padding": "11px 30px",
-                            "border_radius": "10px",
-                            "border": "none",
-                            "cursor": "pointer",
-                            "white_space": "nowrap",
-                            "flex_shrink": "0",
-                        },
-                    ),
-                    gap="12px",
-                    width="100%",
-                    flex_wrap="wrap",
-                    align="end",
-                ),
-                max_width="960px",
-                margin="0 auto",
-                background=WHITE,
-                padding="28px 32px",
-                border_radius="18px",
-                box_shadow="0 16px 56px rgba(10,35,66,0.13)",
-            ),
-            background="#F0F6FA",
-            padding="40px 24px",
-            width="100%",
+      
+
+rx.box(
+    rx.box(
+        rx.text(
+            "¿A dónde quieres ir?",
+            font_size="0.7rem",
+            font_weight="500",
+            letter_spacing="0.15em",
+            text_transform="uppercase",
+            color=SKY,
+            margin_bottom="14px",
+            font_family="'DM Sans', sans-serif",
         ),
+        rx.flex(
+            rx.box(
+                rx.el.input(
+                    placeholder="Destino o actividad",
+                    type="text",
+                    value=SearchState.destino,
+                    on_change=SearchState.set_destino,
+                    style=INPUT_STYLE,
+                ),
+                flex="2",
+                min_width="150px",
+            ),
+            rx.box(
+                rx.el.input(
+                    type="date",
+                    value=SearchState.fecha,
+                    on_change=SearchState.set_fecha,
+                    style=INPUT_STYLE,
+                ),
+                flex="1",
+                min_width="140px",
+            ),
+            rx.box(
+                rx.el.input(
+                    placeholder="Personas",
+                    type="number",
+                    min="1",
+                    value=SearchState.personas,
+                    on_change=SearchState.set_personas,
+                    style=INPUT_STYLE,
+                ),
+                flex="0.8",
+                min_width="110px",
+            ),
+            rx.el.button(
+                "Buscar →",
+                on_click=SearchState.buscar,
+                style={
+                    "background": OCEAN,
+                    "color": WHITE,
+                    "font_family": "'DM Sans', sans-serif",
+                    "font_size": "0.92rem",
+                    "font_weight": "600",
+                    "padding": "11px 30px",
+                    "border_radius": "10px",
+                    "border": "none",
+                    "cursor": "pointer",
+                    "white_space": "nowrap",
+                    "flex_shrink": "0",
+                },
+            ),
+            gap="12px",
+            width="100%",
+            flex_wrap="wrap",
+            align="end",
+        ),
+        max_width="960px",
+        margin="0 auto",
+        background=WHITE,
+        padding="28px 32px",
+        border_radius="18px",
+        box_shadow="0 16px 56px rgba(10,35,66,0.13)",
+    ),
+    background="#F0F6FA",
+    padding="40px 24px",
+    width="100%",
+),
 
         # ── OFERTAS ───────────────────────────────────────────────────────
         rx.vstack(

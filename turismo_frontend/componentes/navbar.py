@@ -84,6 +84,7 @@ def navbar() -> rx.Component:
                 border_radius="40px",
                 border="none",
                 cursor="pointer",
+                on_click=rx.redirect("/reservas"), 
                 gap="7px",
                 _hover={
                     "background": SKY,
