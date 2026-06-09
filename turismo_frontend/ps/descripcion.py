@@ -1,6 +1,7 @@
 import reflex as rx
 from turismo_frontend.componentes.navbar import navbar
 from turismo_frontend.componentes.footer import footer
+from turismo_frontend.state.search_state import SearchState
 
 
 OCEAN  = "#0A2342"
@@ -15,7 +16,6 @@ BORDER = "#DDE6EE"
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def label_strip(text: str) -> rx.Component:
-    """Small uppercase label with a golden left-bar."""
     return rx.hstack(
         rx.box(width="3px", height="14px",
                background=SUN, border_radius="2px"),
@@ -57,7 +57,6 @@ def info_badge(icon: str, label: str, valor: str) -> rx.Component:
 
 def itinerario_item(hora: str, actividad: str, last: bool = False) -> rx.Component:
     return rx.hstack(
-        # timeline column
         rx.vstack(
             rx.box(
                 rx.text(hora[:5],
@@ -114,9 +113,7 @@ def lugar_descripcion(
 ) -> rx.Component:
 
     img_col = rx.box(
-        # Photo
         rx.image(src=imagen, width="100%", height="100%", object_fit="cover"),
-        # Price overlay
         rx.box(
             rx.vstack(
                 rx.text("desde",
@@ -143,7 +140,6 @@ def lugar_descripcion(
     )
 
     info_col = rx.vstack(
-        # Title block
         rx.vstack(
             label_strip("Destino destacado"),
             rx.heading(
@@ -163,8 +159,6 @@ def lugar_descripcion(
             ),
             spacing="3", align="start",
         ),
-
-        # Info badges grid
         rx.box(
             rx.grid(
                 info_badge("clock",    "Duración",    duracion),
@@ -181,8 +175,6 @@ def lugar_descripcion(
             background=WHITE,
             box_shadow="0 2px 12px rgba(10,35,66,0.05)",
         ),
-
-        # Itinerary
         rx.box(
             rx.vstack(
                 rx.hstack(
@@ -209,8 +201,6 @@ def lugar_descripcion(
             background=WHITE,
             box_shadow="0 2px 12px rgba(10,35,66,0.05)",
         ),
-
-        # CTA button
         rx.link(
             rx.button(
                 rx.icon("calendar-check", size=15),
@@ -234,7 +224,6 @@ def lugar_descripcion(
             ),
             href="/reservas",
         ),
-
         spacing="5",
         align="start",
         flex="1",
@@ -266,6 +255,7 @@ ITINERARIO_BASE = [
 
 # ── Page ──────────────────────────────────────────────────────────────────────
 
+@rx.page(route="/descripcion", on_load=SearchState.on_load)
 def descripcion() -> rx.Component:
     return rx.box(
 
@@ -280,7 +270,6 @@ def descripcion() -> rx.Component:
 
         # ── HERO ──────────────────────────────────────────────────────────
         rx.box(
-            # Overlay gradient
             rx.box(
                 position="absolute", inset="0",
                 background=(
@@ -291,9 +280,7 @@ def descripcion() -> rx.Component:
                 ),
                 z_index="1",
             ),
-            # Content
             rx.vstack(
-                # Ornamental line
                 rx.hstack(
                     rx.box(width="32px", height="1px", background=SUN, opacity="0.65"),
                     rx.text(
@@ -343,48 +330,69 @@ def descripcion() -> rx.Component:
             justify_content="center",
         ),
 
-        # ── DESTINOS ──────────────────────────────────────────────────────
+        # ── DESTINOS (filtrados) ───────────────────────────────────────────
         rx.box(
             rx.vstack(
 
-                lugar_descripcion(
-                    "/saona.jpg",
-                    "Isla Saona",
-                    "Disfruta de aguas cristalinas, arena blanca y un ambiente tropical perfecto "
-                    "para relajarte y vivir una experiencia inolvidable en el Caribe.",
-                    "1 día completo", "Incluido",
-                    "Almuerzo buffet, guía y catamarán",
-                    "RD$3,500",
-                    ITINERARIO_BASE,
-                    reverse=False,
+                # Isla Saona
+                rx.cond(
+                    (SearchState.destino == "") |
+                    SearchState.destino.lower().contains("saona"),
+                    rx.fragment(
+                        lugar_descripcion(
+                            "/saona.jpg",
+                            "Isla Saona",
+                            "Disfruta de aguas cristalinas, arena blanca y un ambiente tropical perfecto "
+                            "para relajarte y vivir una experiencia inolvidable en el Caribe.",
+                            "1 día completo", "Incluido",
+                            "Almuerzo buffet, guía y catamarán",
+                            "RD$3,500",
+                            ITINERARIO_BASE,
+                            reverse=False,
+                        ),
+                        dot_separator(),
+                    ),
+                    rx.box(),
                 ),
 
-                dot_separator(),
-
-                lugar_descripcion(
-                    "/samana.jpg",
-                    "Samaná",
-                    "Vive una escapada natural entre playas, montañas, cascadas y paisajes verdes "
-                    "que muestran la belleza auténtica y genuina del país.",
-                    "1 día completo", "Incluido",
-                    "Almuerzo, guía y puntos naturales",
-                    "RD$4,200",
-                    ITINERARIO_BASE,
-                    reverse=True,
+                # Samaná
+                rx.cond(
+                    (SearchState.destino == "") |
+                    SearchState.destino.lower().contains("samana") |
+                    SearchState.destino.lower().contains("samaná"),
+                    rx.fragment(
+                        lugar_descripcion(
+                            "/samana.jpg",
+                            "Samaná",
+                            "Vive una escapada natural entre playas, montañas, cascadas y paisajes verdes "
+                            "que muestran la belleza auténtica y genuina del país.",
+                            "1 día completo", "Incluido",
+                            "Almuerzo, guía y puntos naturales",
+                            "RD$4,200",
+                            ITINERARIO_BASE,
+                            reverse=True,
+                        ),
+                        dot_separator(),
+                    ),
+                    rx.box(),
                 ),
 
-                dot_separator(),
-
-                lugar_descripcion(
-                    "/puntacana.jpg",
-                    "Punta Cana",
-                    "Relájate en uno de los destinos más famosos del Caribe, ideal para disfrutar "
-                    "playas espectaculares, resorts y actividades de primer nivel.",
-                    "1 día completo", "Incluido",
-                    "Playa, almuerzo y actividades",
-                    "RD$5,000",
-                    ITINERARIO_BASE,
-                    reverse=False,
+                # Punta Cana
+                rx.cond(
+                    (SearchState.destino == "") |
+                    SearchState.destino.lower().contains("punta"),
+                    lugar_descripcion(
+                        "/puntacana.jpg",
+                        "Punta Cana",
+                        "Relájate en uno de los destinos más famosos del Caribe, ideal para disfrutar "
+                        "playas espectaculares, resorts y actividades de primer nivel.",
+                        "1 día completo", "Incluido",
+                        "Playa, almuerzo y actividades",
+                        "RD$5,000",
+                        ITINERARIO_BASE,
+                        reverse=False,
+                    ),
+                    rx.box(),
                 ),
 
                 spacing="9",
